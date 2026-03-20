@@ -304,9 +304,51 @@
         <div><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Email (opsional)</label> <input type="email" id="email" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="contoh@email.com"></div>
        </div>
        <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Jam Kedatangan (Otomatis)</label> <input type="time" id="arrivalTime" class="form-input w-full rounded-xl px-4 py-3 text-sm" style="cursor:not-allowed; opacity:0.8" readonly required></div>
-       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Kecamatan <span class="text-red-400">*</span></label> <select id="district" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> <option value="">— Pilih Kecamatan —</option> <option value="Tanimbar Selatan">Tanimbar Selatan</option> <option value="Tanimbar Utara">Tanimbar Utara</option> <option value="Selaru">Selaru</option> </select></div>
-       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Jenis Layanan <span class="text-red-400">*</span></label> <select id="serviceType" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> <option value="">— Pilih Layanan —</option> <option value="Kartu Keluarga">Kartu Keluarga (A)</option> <option value="Biodata WNI">Biodata WNI (B)</option> <option value="KTP Elektronik">KTP Elektronik (C)</option> <option value="Kartu Identitas Anak">Kartu Identitas Anak (D)</option> <option value="Pindah Keluar">Pindah Keluar (E)</option> <option value="Pindah Masuk">Pindah Masuk (F)</option> <option value="Akta Kelahiran">Akta Kelahiran (G)</option> <option value="Akta Perkawinan">Akta Perkawinan (H)</option> <option value="Akta Kematian">Akta Kematian (I)</option> <option value="Akta Perceraian">Akta Perceraian (J)</option> <option value="Lainnya">Lainnya (K)</option> </select></div>
-       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Pilih Loket <span class="text-red-400">*</span></label> <select id="counterChoice" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> <option value="">— Pilih Loket —</option> <option value="Loket 1">Loket 1</option> <option value="Loket 2">Loket 2</option> <option value="Loket 3">Loket 3</option> </select></div>
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Kecamatan <span class="text-red-400">*</span></label> 
+        <select id="district" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> 
+         <option value="">— Pilih Kecamatan —</option> 
+         <option value="Tanimbar Selatan">Tanimbar Selatan</option> 
+         <option value="Selaru">Selaru</option> 
+         <option value="Wertamrian">Wertamrian</option>
+         <option value="Wermaktian">Wermaktian</option>
+         <option value="Tanimbar Utara">Tanimbar Utara</option>
+         <option value="Fordata">Fordata</option>
+         <option value="Wuarlabobar">Wuarlabobar</option>
+         <option value="Kormomolin">Kormomolin</option>
+         <option value="Nirunmas">Nirunmas</option>
+         <option value="Molumaru">Molumaru</option>
+        </select>
+       </div>
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Jenis Layanan (Bisa pilih lebih dari satu) <span class="text-red-400">*</span></label> 
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="serviceTypeContainer">
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="Kartu Keluarga" class="service-checkbox w-4 h-4 accent-[#d4a844]"> Kartu Keluarga (A)</label>
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="Biodata WNI" class="service-checkbox w-4 h-4 accent-[#d4a844]"> Biodata WNI (B)</label>
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="KTP Elektronik" class="service-checkbox w-4 h-4 accent-[#d4a844]"> KTP Elektronik (C)</label>
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="Kartu Identitas Anak" class="service-checkbox w-4 h-4 accent-[#d4a844]"> Kartu Identitas Anak (D)</label>
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="Pindah Keluar" class="service-checkbox w-4 h-4 accent-[#d4a844]"> Pindah Keluar (E)</label>
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="Pindah Masuk" class="service-checkbox w-4 h-4 accent-[#d4a844]"> Pindah Masuk (F)</label>
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="Akta Kelahiran" class="service-checkbox w-4 h-4 accent-[#d4a844]"> Akta Kelahiran (G)</label>
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="Akta Perkawinan" class="service-checkbox w-4 h-4 accent-[#d4a844]"> Akta Perkawinan (H)</label>
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="Akta Kematian" class="service-checkbox w-4 h-4 accent-[#d4a844]"> Akta Kematian (I)</label>
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="Akta Perceraian" class="service-checkbox w-4 h-4 accent-[#d4a844]"> Akta Perceraian (J)</label>
+          <label class="flex items-center gap-3 text-sm text-white p-3 rounded-xl form-input cursor-pointer"><input type="checkbox" value="Lainnya" class="service-checkbox w-4 h-4 accent-[#d4a844]"> Lainnya (K)</label>
+        </div>
+       </div>
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Pilih Loket <span class="text-red-400">*</span></label> 
+        <select id="counterChoice" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> 
+         <option value="">— Pilih Loket —</option> 
+         <option value="Loket 1">Loket 1</option> 
+         <option value="Loket 2">Loket 2</option> 
+         <option value="Loket 3">Loket 3</option> 
+         <option value="Loket 4">Loket 4</option> 
+         <option value="Loket 5">Loket 5</option> 
+         <option value="Loket 6">Loket 6</option> 
+         <option value="Loket 7">Loket 7</option> 
+         <option value="Loket 8">Loket 8</option> 
+         <option value="Loket 9">Loket 9</option> 
+         <option value="Loket 10">Loket 10</option> 
+        </select>
+       </div>
        <button type="submit" class="btn-primary w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 mt-6"><i data-lucide="ticket" style="width:18px;height:18px"></i> Ambil Nomor Antrian</button>
       </form>
      </div>
@@ -464,7 +506,7 @@
 // CONFIGURATION: GOOGLE APPS SCRIPT URL
 // ============================================================
 // PASTE URL DEPLOYMENT GOOGLE APPS SCRIPT ANDA DI SINI
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyEs7r9ogD_KKx6dls6Hqn1IZa3nTp1bk8-bVek8SNXpPhsNsaPEraxCbosqW3a6y1dTQ/exec"; 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyz7yNj_-N1YE485Efc_Q2pCzdUyhxRW3jp-MhUh_yvkRwvhYJ3YlID_kY4dttJlBfuLg/exec"; 
 
 // ============================================================
 // GLOBAL STATE
@@ -550,11 +592,17 @@ function showLoading(show) {
 // ============================================================
 // SUARA - TEXT TO SPEECH
 // ============================================================
-function speakQueue(queueNum) {
+function speakQueue(queueNum, fullName, counterName) {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const parts = queueNum.split('-');
-  const text = `Nomor antrian ${parts[0]} ${Array.from(parts[1]).join(' ')}`;
+  
+  // Mengatasi jika nama/loket undefined
+  const nameToSpeak = fullName || "Pelanggan";
+  const counterToSpeak = counterName || "Loket";
+
+  // Contoh output: "Nomor antrian, C, 0 0 1, atas nama, Budi, silahkan menuju ke, Loket 1"
+  const text = `Nomor antrian, ${parts[0]}, ${Array.from(parts[1]).join(' ')}, atas nama, ${nameToSpeak}, silahkan menuju ke, ${counterToSpeak}`;
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'id-ID';
   utterance.rate = 0.8;
@@ -723,8 +771,19 @@ async function handleQueueSubmit(e) {
     return;
   }
 
-  const serviceType = document.getElementById('serviceType').value;
-  const queueNum = generateQueueNumber(serviceType);
+  // AMBIL CHECKBOX: Ambil semua value dari pilihan checkbox yang dicentang
+  const selectedCheckboxes = Array.from(document.querySelectorAll('.service-checkbox:checked')).map(cb => cb.value);
+  if (selectedCheckboxes.length === 0) {
+      showToast('❌ Pilih minimal 1 jenis layanan', 'error');
+      return;
+  }
+
+  // LAYANAN PERTAMA digunakan sebagai kode abjad (Misal: A, B, dst)
+  const firstService = selectedCheckboxes[0];
+  const serviceTypeString = selectedCheckboxes.join(', '); // Gabungkan teks untuk disimpan (cth: "KK, KTP")
+  const queueNum = generateQueueNumber(firstService);
+  const counterChoice = document.getElementById('counterChoice').value;
+  const userFullName = document.getElementById('fullName').value.trim();
   
   // Ambil waktu paling mutakhir (saat tombol submit ditekan)
   const exactArrivalTime = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
@@ -733,24 +792,24 @@ async function handleQueueSubmit(e) {
     id: "Q-" + Date.now() + "-" + Math.floor(Math.random() * 1000), // Unique ID
     queue_number: queueNum,
     date: today,
-    full_name: document.getElementById('fullName').value.trim(),
+    full_name: userFullName,
     nik: document.getElementById('nik').value.trim(),
     phone: document.getElementById('phone').value.trim(),
     email: document.getElementById('email').value.trim(),
     district: document.getElementById('district').value,
-    service_type: serviceType,
+    service_type: serviceTypeString,
     arrival_time: exactArrivalTime,
     status: 'Menunggu',
-    counter: document.getElementById('counterChoice').value,
+    counter: counterChoice,
     created_at: new Date().toISOString(),
-    service_code: SERVICE_CODES[serviceType]
+    service_code: SERVICE_CODES[firstService]
   };
 
   const isSuccess = await createQueueInSheet(queueData);
 
   if (isSuccess) {
     showToast(`✅ Antrian ${queueNum} berhasil dibuat!`, 'success');
-    speakQueue(queueNum);
+    speakQueue(queueNum, userFullName, counterChoice);
     openPrintModal(queueData);
     e.target.reset();
     initQueueForm();
@@ -818,7 +877,7 @@ function renderAdmin() {
   tbody.innerHTML = list.length === 0 ? '<tr><td colspan="6" class="px-4 py-12 text-center text-sm" style="color:#8899bb">Belum ada data.</td></tr>' : list.map((q, i) => `
     <tr style="border-bottom: 1px solid rgba(255,255,255,0.04)">
       <td class="px-4 py-3 text-xs">${i+1}</td>
-      <td class="px-4 py-3"><span class="font-black text-sm gradient-text cursor-pointer" onclick="speakQueue('${q.queue_number}', '${q.counter}')" title="Klik untuk memanggil">${q.queue_number}</span></td>
+      <td class="px-4 py-3"><span class="font-black text-sm gradient-text cursor-pointer" onclick="speakQueue('${q.queue_number}', '${q.full_name}', '${q.counter}')" title="Klik untuk memanggil">${q.queue_number}</span></td>
       <td class="px-4 py-3 text-sm">${q.full_name}</td>
       <td class="px-4 py-3 text-sm">${q.service_type} • ${q.counter}</td>
       <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-bold ${q.status === 'Menunggu' ? 'badge-waiting' : q.status === 'Diproses' ? 'badge-processing' : 'badge-done'}">${q.status}</span></td>
@@ -837,7 +896,7 @@ function renderOperator() {
   tbody.innerHTML = list.length === 0 ? '<tr><td colspan="6" class="px-4 py-12 text-center text-sm" style="color:#8899bb">Belum ada antrian.</td></tr>' : list.map((q, i) => `
     <tr style="border-bottom: 1px solid rgba(255,255,255,0.04)">
       <td class="px-4 py-3 text-xs">${i+1}</td>
-      <td class="px-4 py-3"><span class="font-black text-sm gradient-text cursor-pointer" onclick="speakQueue('${q.queue_number}', '${q.counter}')" title="Klik untuk memanggil">${q.queue_number}</span></td>
+      <td class="px-4 py-3"><span class="font-black text-sm gradient-text cursor-pointer" onclick="speakQueue('${q.queue_number}', '${q.full_name}', '${q.counter}')" title="Klik untuk memanggil">${q.queue_number}</span></td>
       <td class="px-4 py-3 text-sm">${q.full_name}</td>
       <td class="px-4 py-3 text-sm">${q.service_type}</td>
       <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-bold ${q.status === 'Menunggu' ? 'badge-waiting' : q.status === 'Diproses' ? 'badge-processing' : 'badge-done'}">${q.status}</span></td>
@@ -854,7 +913,7 @@ async function updateStatusFromPanel(id, newStatus) {
   const isSuccess = await updateStatusInSheet(id, newStatus);
   if (isSuccess) {
     showToast(`✅ Status diperbarui ke: ${newStatus}`, 'success');
-    if (newStatus === 'Diproses') speakQueue(record.queue_number, record.counter);
+    if (newStatus === 'Diproses') speakQueue(record.queue_number, record.full_name, record.counter);
   } else {
     showToast('❌ Gagal update status', 'error');
   }
