@@ -464,20 +464,13 @@
 // CONFIGURATION: GOOGLE APPS SCRIPT URL
 // ============================================================
 // PASTE URL DEPLOYMENT GOOGLE APPS SCRIPT ANDA DI SINI
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxTvVGEXrALrZlTuXt-ydiwvznC-lWgS1M7RBOMWkdDFFDh45oMPVYHHzUnPSmDrHWmRw/exec"; 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwMi3DclWLQgtY3U_ceJ6CXzCgJor9khZ5smeMun_5Y5LPUYQWQUzV-4S36a1TDquApMg/exec"; 
 
 // ============================================================
 // GLOBAL STATE
 // ============================================================
 let allQueues = [];
 let currentUser = null;
-
-const DEMO_USERS = {
-  'loket1': { password: '123456', role: 'operator', loket: 'Loket 1', counter: 'Loket 1' },
-  'loket2': { password: '123456', role: 'operator', loket: 'Loket 2', counter: 'Loket 2' },
-  'loket3': { password: '123456', role: 'operator', loket: 'Loket 3', counter: 'Loket 3' },
-  'admin': { password: '123456', role: 'admin', loket: 'Semua Loket', counter: null }
-};
 
 const SERVICE_CODES = {
   'Kartu Keluarga': 'A', 'Biodata WNI': 'B', 'KTP Elektronik': 'C',
@@ -649,23 +642,43 @@ function selectServiceAndGo(service) { document.getElementById('serviceType').va
 // ============================================================
 // LOGIN
 // ============================================================
-function handleLogin(e) {
+async function handleLogin(e) {
   e.preventDefault();
   const username = document.getElementById('loginUsername').value.trim();
   const password = document.getElementById('loginPassword').value;
   
-  if (!DEMO_USERS[username] || DEMO_USERS[username].password !== password) {
-    document.getElementById('loginError').textContent = '❌ Username atau password salah';
-    document.getElementById('loginError').classList.remove('hidden');
-    return;
+  if (GAS_URL === "URL_GOOGLE_APPS_SCRIPT_ANDA_DISINI") {
+      document.getElementById('loginError').textContent = '⚠️ Backend Script belum dikonfigurasi!';
+      document.getElementById('loginError').classList.remove('hidden');
+      return;
   }
-  
-  currentUser = { ...DEMO_USERS[username], username };
-  document.getElementById('loginForm').reset();
-  document.getElementById('loginError').classList.add('hidden');
-  updateNavBar();
-  showPage(currentUser.role === 'admin' ? 'admin' : 'operator');
-  showToast(`✅ Selamat datang ${username}!`, 'success');
+
+  showLoading(true);
+  try {
+      const response = await fetch(GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'login', data: { username, password } }),
+          headers: { "Content-Type": "text/plain;charset=utf-8" }
+      });
+      const result = await response.json();
+
+      if (result.status === 'success') {
+          currentUser = result.user; // Menyimpan data user dari Google Sheets
+          document.getElementById('loginForm').reset();
+          document.getElementById('loginError').classList.add('hidden');
+          updateNavBar();
+          showPage(currentUser.role === 'admin' ? 'admin' : 'operator');
+          showToast(`✅ Selamat datang ${currentUser.username}!`, 'success');
+      } else {
+          document.getElementById('loginError').textContent = '❌ ' + result.message;
+          document.getElementById('loginError').classList.remove('hidden');
+      }
+  } catch (err) {
+      document.getElementById('loginError').textContent = '❌ Gagal terhubung ke database. Cek internet Anda.';
+      document.getElementById('loginError').classList.remove('hidden');
+  } finally {
+      showLoading(false);
+  }
 }
 function logout() {
   currentUser = null;
@@ -771,7 +784,7 @@ function renderTrackingList() {
 }
 
 function updateStats() {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTodayString();
   let todayQueues = allQueues.filter(q => q.date === today);
   
   const total = todayQueues.length;
@@ -799,13 +812,13 @@ function updateStats() {
 }
 
 function renderAdmin() {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTodayString();
   const list = allQueues.filter(q => q.date === today);
   const tbody = document.getElementById('adminTableBody');
   tbody.innerHTML = list.length === 0 ? '<tr><td colspan="6" class="px-4 py-12 text-center text-sm" style="color:#8899bb">Belum ada data.</td></tr>' : list.map((q, i) => `
     <tr style="border-bottom: 1px solid rgba(255,255,255,0.04)">
       <td class="px-4 py-3 text-xs">${i+1}</td>
-      <td class="px-4 py-3"><span class="font-black text-sm gradient-text cursor-pointer" onclick="speakQueue('${q.queue_number}')" title="Klik untuk memanggil">${q.queue_number}</span></td>
+      <td class="px-4 py-3"><span class="font-black text-sm gradient-text cursor-pointer" onclick="speakQueue('${q.queue_number}', '${q.counter}')" title="Klik untuk memanggil">${q.queue_number}</span></td>
       <td class="px-4 py-3 text-sm">${q.full_name}</td>
       <td class="px-4 py-3 text-sm">${q.service_type} • ${q.counter}</td>
       <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-bold ${q.status === 'Menunggu' ? 'badge-waiting' : q.status === 'Diproses' ? 'badge-processing' : 'badge-done'}">${q.status}</span></td>
@@ -816,7 +829,7 @@ function renderAdmin() {
 }
 
 function renderOperator() {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTodayString();
   let list = allQueues.filter(q => q.date === today);
   if (currentUser.counter) list = list.filter(q => q.counter === currentUser.counter);
 
@@ -824,7 +837,7 @@ function renderOperator() {
   tbody.innerHTML = list.length === 0 ? '<tr><td colspan="6" class="px-4 py-12 text-center text-sm" style="color:#8899bb">Belum ada antrian.</td></tr>' : list.map((q, i) => `
     <tr style="border-bottom: 1px solid rgba(255,255,255,0.04)">
       <td class="px-4 py-3 text-xs">${i+1}</td>
-      <td class="px-4 py-3"><span class="font-black text-sm gradient-text cursor-pointer" onclick="speakQueue('${q.queue_number}')" title="Klik untuk memanggil">${q.queue_number}</span></td>
+      <td class="px-4 py-3"><span class="font-black text-sm gradient-text cursor-pointer" onclick="speakQueue('${q.queue_number}', '${q.counter}')" title="Klik untuk memanggil">${q.queue_number}</span></td>
       <td class="px-4 py-3 text-sm">${q.full_name}</td>
       <td class="px-4 py-3 text-sm">${q.service_type}</td>
       <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-bold ${q.status === 'Menunggu' ? 'badge-waiting' : q.status === 'Diproses' ? 'badge-processing' : 'badge-done'}">${q.status}</span></td>
@@ -841,7 +854,7 @@ async function updateStatusFromPanel(id, newStatus) {
   const isSuccess = await updateStatusInSheet(id, newStatus);
   if (isSuccess) {
     showToast(`✅ Status diperbarui ke: ${newStatus}`, 'success');
-    if (newStatus === 'Diproses') speakQueue(record.queue_number);
+    if (newStatus === 'Diproses') speakQueue(record.queue_number, record.counter);
   } else {
     showToast('❌ Gagal update status', 'error');
   }
