@@ -506,7 +506,7 @@
 // CONFIGURATION: GOOGLE APPS SCRIPT URL
 // ============================================================
 // PASTE URL DEPLOYMENT GOOGLE APPS SCRIPT ANDA DI SINI
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyz7yNj_-N1YE485Efc_Q2pCzdUyhxRW3jp-MhUh_yvkRwvhYJ3YlID_kY4dttJlBfuLg/exec"; 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzSEAmemST16iEmFcUh5qpSC3BVRv1j41w91l-W8gJ7i69ECwNggBgs_h1vY_Ds3_y_Vg/exec"; 
 
 // ============================================================
 // GLOBAL STATE
@@ -823,7 +823,7 @@ async function handleQueueSubmit(e) {
 // ============================================================
 function renderTrackingList() {
   const term = document.getElementById('trackingInput').value.toLowerCase();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTodayString();
   let list = allQueues.filter(q => q.date === today && q.queue_number.toLowerCase().includes(term));
   
   const container = document.getElementById('trackingList');
