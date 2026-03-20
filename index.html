@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antrian Online – Disdukcapil Kab. Kepulauan Tanimbar</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #0a1628;
+      --surface: #112240;
+      --surface2: #1a3260;
+      --gold: #d4a844;
+      --gold-light: #f0c85a;
+      --blue-accent: #4a9eff;
+      --text-main: #e8f0fe;
+      --text-muted: #8899bb;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+    .nav-glass {
+      background: rgba(10,22,40,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(212,168,68,0.15);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #f0c85a 0%, #d4a844 50%, #4a9eff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-glass {
+      background: rgba(17,34,64,0.8);
+      border: 1px solid rgba(212,168,68,0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    .card-glass:hover {
+      border-color: rgba(212,168,68,0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #d4a844 0%, #f0c85a 100%);
+      color: #0a1628;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(212,168,68,0.4); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .btn-secondary:hover { background: var(--gold); color: var(--bg); }
+
+    .form-input {
+      background: rgba(26,50,96,0.5);
+      border: 1px solid rgba(212,168,68,0.25);
+      color: var(--text-main);
+      transition: all 0.3s ease;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      background: rgba(26,50,96,0.8);
+      box-shadow: 0 0 0 3px rgba(212,168,68,0.15);
+    }
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-input option { background: var(--surface); color: var(--text-main); }
+
+    .badge-waiting { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+    .badge-processing { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+    .badge-done { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      animation: slideInRight 0.3s ease;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .admin-table th { color: var(--gold); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .admin-table tr:hover td { background: rgba(212,168,68,0.05); }
+
+    .mobile-menu { display: none; }
+    .mobile-menu.open { display: flex; }
+
+    @media (max-width: 768px) { .hide-mobile { display: none !important; } }
+    
+    #loading-overlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(10,22,40,0.8); backdrop-filter: blur(5px);
+        display: flex; flex-direction: column; justify-content: center; items-center; z-index: 9999;
+        display: none;
+    }
+    .spinner { border: 4px solid rgba(212,168,68,0.3); border-top-color: var(--gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto;}
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+ </head>
+ <body class="h-full">
+  
+  <!-- Loading Overlay -->
+  <div id="loading-overlay">
+      <div class="spinner"></div>
+      <div class="text-center font-bold text-white text-sm tracking-widest">SINKRONISASI DATA...</div>
+  </div>
+
+  <nav class="nav-glass fixed top-0 left-0 right-0 z-50">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+     <div class="flex items-center gap-3 cursor-pointer" id="logoClick" onclick="currentUser ? null : showPage('home')">
+      <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, #d4a844, #f0c85a);"><i data-lucide="landmark" style="width:18px;height:18px;color:#0a1628;stroke-width:2.5"></i>
+      </div>
+      <div class="hidden sm:block">
+       <div class="text-sm font-bold text-white leading-tight">
+        Disdukcapil
+       </div>
+       <div class="text-xs" style="color:#d4a844">
+        Kab. Kepulauan Tanimbar
+       </div>
+      </div>
+     </div>
+     <div class="hidden md:flex items-center gap-1" id="desktopNav">
+      <button onclick="showPage('home')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all" style="color:#8899bb">Beranda</button> <button onclick="showPage('queue')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all" style="color:#8899bb">Ambil Antrian</button> <button onclick="showPage('tracking')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all" style="color:#8899bb">Cek Antrian</button> <button onclick="showPage('procedure')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all" style="color:#8899bb">Prosedur</button> <button onclick="showPage('about')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all" style="color:#8899bb">Tentang</button> <button onclick="showPage('contact')" class="nav-btn px-3 py-2 rounded-lg text-sm font-medium transition-all" style="color:#8899bb">Kontak</button>
+     </div>
+     <div id="userInfoNav" class="hidden flex items-center gap-3"><span id="userDisplayName" class="text-sm font-semibold" style="color:#d4a844"></span><button onclick="logout()" class="btn-secondary px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5"><i data-lucide="log-out" style="width:14px;height:14px"></i> Logout</button>
+     </div>
+     <div id="authNav" class="flex items-center gap-2"><button onclick="showPage('login')" class="btn-secondary px-3 py-1.5 rounded-lg text-xs hidden md:flex items-center gap-1.5"><i data-lucide="log-in" style="width:14px;height:14px"></i> Login Operator</button><button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg" style="color:#d4a844"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+     </div>
+    </div>
+   </div>
+   <div id="mobileMenu" class="mobile-menu flex-col border-t md:hidden" style="border-color:rgba(212,168,68,0.15); background:rgba(10,22,40,0.98)">
+    <div class="px-4 py-3 flex flex-col gap-1" id="mobileMenuContent"></div>
+   </div>
+  </nav>
+  <div id="modalPrint" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.7)">
+   <div class="card-glass rounded-2xl max-w-sm w-full p-8 text-center">
+    <div class="text-6xl font-black gradient-text mb-4" id="printQueueNum">
+     A-001
+    </div>
+    <div class="mb-3 text-sm" style="color:#8899bb">
+     <span id="printFullName">Nama Pelanggan</span>
+    </div>
+    <div class="mb-4 text-sm" style="color:#8899bb">
+     Layanan: <span id="printService" style="color:#d4a844">Perekaman KTP-el</span>
+    </div>
+    <div class="mb-6 text-sm" style="color:#8899bb">
+     Loket: <span id="printCounter" style="color:#4a9eff">Loket 1</span>
+    </div>
+    <div class="flex gap-3"><button onclick="printTicket()" class="btn-primary flex-1 py-3 rounded-xl text-sm font-bold"><i data-lucide="printer" style="width:16px;height:16px"></i> Cetak</button> <button onclick="closePrintModal()" class="btn-secondary flex-1 py-3 rounded-xl text-sm font-bold"><i data-lucide="x" style="width:16px;height:16px"></i> Tutup</button>
+    </div>
+   </div>
+  </div>
+  <div id="appWrapper" class="w-full" style="padding-top:64px; min-height:100%">
+   
+   <!-- PAGE: HOME -->
+   <div id="page-home" class="page-section active">
+    <section style="min-height:90%; background: radial-gradient(ellipse at 20% 50%, rgba(74,158,255,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(212,168,68,0.08) 0%, transparent 60%), var(--bg); padding: 80px 20px;">
+     <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+       <div>
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style="background:rgba(212,168,68,0.1);border:1px solid rgba(212,168,68,0.3)">
+         <div class="w-2 h-2 rounded-full bg-green-400" style="animation:pulse 2s infinite"></div><span class="text-xs font-semibold" style="color:#d4a844">Layanan Aktif – Senin s/d Jumat</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black leading-tight mb-6"><span class="gradient-text">Sistem Antrian Online</span></h1>
+        <p id="hero-subtitle" class="text-lg mb-4" style="color:#8899bb">Layanan administrasi kependudukan yang cepat, mudah, dan efisien untuk masyarakat Kabupaten Kepulauan Tanimbar.</p>
+        <div class="text-sm mb-8" style="color:#4a9eff">
+         📍 <span id="office-name-display">Dinas Kependudukan dan Pencatatan Sipil</span> – Kab. Kepulauan Tanimbar
+        </div>
+        <div class="flex flex-wrap gap-4 mb-8"><button onclick="showPage('queue')" class="btn-primary px-6 py-3 rounded-xl flex items-center gap-2 text-sm font-bold"><i data-lucide="ticket" style="width:18px;height:18px"></i> Ambil Antrian Sekarang</button><button onclick="showPage('tracking')" class="btn-secondary px-6 py-3 rounded-xl flex items-center gap-2 text-sm"><i data-lucide="search" style="width:18px;height:18px"></i> Cek Status Antrian</button>
+        </div>
+        <div class="grid grid-cols-3 gap-4 mt-10">
+         <div class="text-center">
+          <div class="text-2xl font-black" style="color:#d4a844" id="stat-total-home">0</div>
+          <div class="text-xs mt-1" style="color:#8899bb">Antrian Hari Ini</div>
+         </div>
+         <div class="text-center">
+          <div class="text-2xl font-black" style="color:#4a9eff" id="stat-waiting-home">0</div>
+          <div class="text-xs mt-1" style="color:#8899bb">Sedang Menunggu</div>
+         </div>
+         <div class="text-center">
+          <div class="text-2xl font-black text-green-400" id="stat-done-home">0</div>
+          <div class="text-xs mt-1" style="color:#8899bb">Telah Selesai</div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+    <section class="py-16" style="background:rgba(17,34,64,0.4)">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+       <h2 class="text-3xl font-black text-white">Jenis Layanan Tersedia</h2>
+       <p class="mt-3 text-sm" style="color:#8899bb">Pilih layanan yang Anda butuhkan dan ambil antrian secara online</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+       <!-- KOTAK LAYANAN (Dipotong demi singkatnya, sama seperti original) -->
+       <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Perekaman KTP-el')">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="scan-face" style="width:22px;height:22px;color:#d4a844"></i></div>
+        <div class="text-xs font-bold text-white leading-tight">Perekaman KTP-el</div>
+        <div class="text-xs mt-1" style="color:#8899bb">Kode: A</div>
+       </div>
+       <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Penerbitan KTP-el')">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="id-card" style="width:22px;height:22px;color:#d4a844"></i></div>
+        <div class="text-xs font-bold text-white leading-tight">Penerbitan KTP-el</div>
+        <div class="text-xs mt-1" style="color:#8899bb">Kode: B</div>
+       </div>
+       <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Kartu Keluarga')">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="users" style="width:22px;height:22px;color:#d4a844"></i></div>
+        <div class="text-xs font-bold text-white leading-tight">Kartu Keluarga</div>
+        <div class="text-xs mt-1" style="color:#8899bb">Kode: C</div>
+       </div>
+       <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Kartu Identitas Anak')">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="star" style="width:22px;height:22px;color:#d4a844"></i></div>
+        <div class="text-xs font-bold text-white leading-tight">Kartu Identitas Anak</div>
+        <div class="text-xs mt-1" style="color:#8899bb">Kode: D</div>
+       </div>
+       <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Akta Kelahiran')">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="baby" style="width:22px;height:22px;color:#d4a844"></i></div>
+        <div class="text-xs font-bold text-white leading-tight">Akta Kelahiran</div>
+        <div class="text-xs mt-1" style="color:#8899bb">Kode: G</div>
+       </div>
+       <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Akta Perkawinan')">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="heart" style="width:22px;height:22px;color:#d4a844"></i></div>
+        <div class="text-xs font-bold text-white leading-tight">Akta Perkawinan</div>
+        <div class="text-xs mt-1" style="color:#8899bb">Kode: I</div>
+       </div>
+      </div>
+     </div>
+    </section>
+    <footer class="py-8" style="background:rgba(10,22,40,0.8)">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="text-sm font-semibold mb-1" style="color:#d4a844">Dinas Kependudukan dan Pencatatan Sipil</div>
+      <div class="text-xs mb-2" style="color:#8899bb">Kabupaten Kepulauan Tanimbar – Provinsi Maluku</div>
+      <div class="text-xs" style="color:#4a9eff">Melayani dengan Hati, Profesional dan Transparan</div>
+     </div>
+    </footer>
+   </div>
+
+   <!-- PAGE: QUEUE -->
+   <div id="page-queue" class="page-section">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+     <div class="text-center mb-8">
+      <h1 class="text-3xl font-black text-white">Form Pengambilan Antrian</h1>
+      <p class="mt-2 text-sm" style="color:#8899bb">Isi data dengan benar. Nomor antrian akan di-generate otomatis.</p>
+     </div>
+     <div id="limit-warning" class="hidden mb-4 p-4 rounded-xl" style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3)">
+      <div class="flex items-center gap-2 text-red-400 text-sm font-semibold"><i data-lucide="alert-circle" style="width:16px;height:16px"></i> Batas maksimal 999 antrian telah tercapai.
+      </div>
+     </div>
+     <div class="card-glass rounded-2xl p-6 md:p-8">
+      <form id="queueForm" onsubmit="handleQueueSubmit(event)">
+       <div class="grid grid-cols-2 gap-4 mb-6">
+        <div><label class="block text-xs font-semibold mb-2" style="color:#d4a844">Nomor Antrian (Otomatis)</label>
+         <div class="form-input rounded-xl px-4 py-3 text-lg font-black" style="color:#f0c85a">—</div>
+        </div>
+        <div><label class="block text-xs font-semibold mb-2" style="color:#d4a844">Tanggal (Otomatis)</label>
+         <div class="form-input rounded-xl px-4 py-3 text-sm" id="queueDateDisplay" style="color:#e8f0fe">—</div>
+        </div>
+       </div>
+       <hr style="border: none; height: 1px; background: linear-gradient(90deg, transparent, rgba(212,168,68,0.4), transparent); margin: 20px 0;">
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Nama Lengkap <span class="text-red-400">*</span></label> <input type="text" id="fullName" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Masukkan nama lengkap sesuai KTP" required></div>
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">NIK (16 digit) <span class="text-red-400">*</span></label> <input type="text" id="nik" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Contoh: 8105xxxxxxxxxxxxxxxx" maxlength="16" required></div>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+        <div><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Nomor HP <span class="text-red-400">*</span></label> <input type="tel" id="phone" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="08xxxxxxxxxx" required></div>
+        <div><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Email (opsional)</label> <input type="email" id="email" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="contoh@email.com"></div>
+       </div>
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Jam Kedatangan <span class="text-red-400">*</span></label> <input type="time" id="arrivalTime" class="form-input w-full rounded-xl px-4 py-3 text-sm" required></div>
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Kecamatan <span class="text-red-400">*</span></label> <select id="district" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> <option value="">— Pilih Kecamatan —</option> <option value="Tanimbar Selatan">Tanimbar Selatan</option> <option value="Tanimbar Utara">Tanimbar Utara</option> <option value="Selaru">Selaru</option> </select></div>
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Jenis Layanan <span class="text-red-400">*</span></label> <select id="serviceType" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> <option value="">— Pilih Layanan —</option> <option value="Perekaman KTP-el">Perekaman KTP-el (A)</option> <option value="Penerbitan KTP-el">Penerbitan KTP-el (B)</option> <option value="Kartu Keluarga">Kartu Keluarga (C)</option> <option value="Kartu Identitas Anak">Kartu Identitas Anak (D)</option> <option value="Akta Kelahiran">Akta Kelahiran (G)</option> <option value="Akta Perkawinan">Akta Perkawinan (I)</option> </select></div>
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Pilih Loket <span class="text-red-400">*</span></label> <select id="counterChoice" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> <option value="">— Pilih Loket —</option> <option value="Loket 1">Loket 1</option> <option value="Loket 2">Loket 2</option> <option value="Loket 3">Loket 3</option> </select></div>
+       <button type="submit" class="btn-primary w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 mt-6"><i data-lucide="ticket" style="width:18px;height:18px"></i> Ambil Nomor Antrian</button>
+      </form>
+     </div>
+    </div>
+   </div>
+
+   <!-- PAGE: TRACKING, PROCEDURE, ABOUT, CONTACT, LOGIN (Tetap sama seperti aslinya) -->
+   <!-- TRACKING -->
+   <div id="page-tracking" class="page-section">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+     <div class="text-center mb-8">
+      <h1 class="text-3xl font-black text-white">Cek Status Antrian</h1>
+      <p class="mt-2 text-sm" style="color:#8899bb">Lacak posisi antrian Anda secara real-time</p>
+     </div>
+     <div class="card-glass rounded-2xl p-6 mb-8">
+      <div class="flex gap-3"><input type="text" id="trackingInput" class="form-input flex-1 rounded-xl px-4 py-3 text-sm" placeholder="Masukkan nomor antrian (contoh: A-001)..." oninput="renderTrackingList()"> <button onclick="renderTrackingList()" class="btn-primary px-6 py-3 rounded-xl text-sm font-bold"><i data-lucide="search" style="width:16px;height:16px"></i></button></div>
+     </div>
+     <div id="trackingList" class="space-y-4"></div>
+    </div>
+   </div>
+   
+   <!-- PROCEDURE -->
+   <div id="page-procedure" class="page-section">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+     <div class="text-center mb-10"><h1 class="text-3xl font-black text-white">Prosedur Layanan</h1></div>
+     <div class="card-glass rounded-2xl p-6 mb-6">
+      <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(212,168,68,0.15)"><i data-lucide="id-card" style="width:20px;height:20px;color:#d4a844"></i></div><h3 class="font-bold text-white">KTP Elektronik</h3></div>
+      <p class="text-sm mb-3" style="color:#8899bb"><strong style="color:#d4a844">Persyaratan:</strong> Surat pengantar RT/RW, Fotokopi KK, KTP lama (jika ada)</p>
+     </div>
+     <div class="card-glass rounded-2xl p-6 mb-6">
+      <div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(212,168,68,0.15)"><i data-lucide="users" style="width:20px;height:20px;color:#d4a844"></i></div><h3 class="font-bold text-white">Kartu Keluarga (KK)</h3></div>
+      <p class="text-sm mb-3" style="color:#8899bb"><strong style="color:#d4a844">Persyaratan:</strong> Surat pengantar, KK lama, Akta nikah/cerai (jika ada)</p>
+     </div>
+     <div class="text-center mt-8"><button onclick="showPage('queue')" class="btn-primary px-8 py-4 rounded-xl text-sm font-bold inline-flex items-center gap-2"><i data-lucide="ticket" style="width:18px;height:18px"></i> Ambil Antrian Sekarang</button></div>
+    </div>
+   </div>
+
+   <!-- ABOUT -->
+   <div id="page-about" class="page-section">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+     <div class="text-center mb-10"><h1 class="text-3xl font-black text-white">Profil Dinas</h1></div>
+     <div class="card-glass rounded-2xl p-8 mb-6">
+      <p class="text-sm leading-relaxed" style="color:#8899bb">Kami berkomitmen memberikan pelayanan administrasi kependudukan yang cepat, tepat, mudah, dan transparan kepada seluruh masyarakat Kabupaten Kepulauan Tanimbar.</p>
+     </div>
+    </div>
+   </div>
+
+   <!-- CONTACT -->
+   <div id="page-contact" class="page-section">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+     <div class="text-center mb-10"><h1 class="text-3xl font-black text-white">Hubungi Kami</h1></div>
+     <div class="card-glass rounded-2xl p-6 mb-6">
+      <div class="space-y-3 text-sm">
+       <div><strong style="color:#d4a844">Alamat:</strong> <span style="color:#8899bb">Jl. Protokol No.1, Saumlaki, Tanimbar Selatan</span></div>
+       <div><strong style="color:#d4a844">Telepon:</strong> <span style="color:#8899bb">(0918) 21XXX</span></div>
+       <div><strong style="color:#d4a844">Email:</strong> <span style="color:#8899bb">disdukcapil@tanimbar.go.id</span></div>
+      </div>
+     </div>
+    </div>
+   </div>
+
+   <!-- LOGIN -->
+   <div id="page-login" class="page-section">
+    <div class="max-w-md mx-auto px-4 py-12 flex items-center justify-center" style="min-height:calc(100% - 64px)">
+     <div class="w-full card-glass rounded-2xl p-8">
+      <div class="text-center mb-8">
+       <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style="background:linear-gradient(135deg,#d4a844,#f0c85a)"><i data-lucide="key" style="width:32px;height:32px;color:#0a1628"></i></div>
+       <h1 class="text-2xl font-black text-white">Login Operator</h1>
+       <p class="text-xs mt-2" style="color:#8899bb">Demo: loket1/123456 atau admin/123456</p>
+      </div>
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+       <div><input type="text" id="loginUsername" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Username" required></div>
+       <div><input type="password" id="loginPassword" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="Password" required></div>
+       <div id="loginError" class="hidden p-3 rounded-xl text-xs" style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171"></div>
+       <button type="submit" class="btn-primary w-full py-3 rounded-xl text-sm font-bold"><i data-lucide="log-in" style="width:16px;height:16px"></i> Login</button>
+      </form>
+      <button onclick="showPage('home')" class="w-full mt-4 py-2 rounded-xl text-sm" style="background:rgba(255,255,255,0.05);color:#8899bb;border:1px solid rgba(255,255,255,0.1)">Kembali</button>
+     </div>
+    </div>
+   </div>
+
+   <!-- ADMIN PANEL -->
+   <div id="page-admin" class="page-section">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+     <div class="flex justify-between items-center mb-8">
+         <h1 class="text-2xl font-black text-white">Panel Admin</h1>
+         <button onclick="fetchData()" class="btn-secondary px-4 py-2 rounded-lg text-xs flex items-center gap-2"><i data-lucide="refresh-cw" style="width:14px;height:14px"></i> Refresh Data</button>
+     </div>
+     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="card-glass rounded-xl p-5"><div class="text-3xl font-black text-white" id="admin-total">0</div><div class="text-xs mt-1" style="color:#8899bb">Total Antrian</div></div>
+      <div class="card-glass rounded-xl p-5"><div class="text-3xl font-black text-yellow-400" id="admin-waiting">0</div><div class="text-xs mt-1" style="color:#8899bb">Menunggu</div></div>
+      <div class="card-glass rounded-xl p-5"><div class="text-3xl font-black" style="color:#60a5fa" id="admin-processing">0</div><div class="text-xs mt-1" style="color:#8899bb">Diproses</div></div>
+      <div class="card-glass rounded-xl p-5"><div class="text-3xl font-black text-green-400" id="admin-done">0</div><div class="text-xs mt-1" style="color:#8899bb">Selesai</div></div>
+     </div>
+     <div class="card-glass rounded-2xl overflow-hidden">
+      <div class="p-4 border-b" style="border-color:rgba(212,168,68,0.1)"><h3 class="font-bold text-white">Data Antrian</h3></div>
+      <div class="overflow-x-auto">
+       <table class="w-full admin-table">
+        <thead style="background:rgba(212,168,68,0.05)">
+         <tr>
+          <th class="px-4 py-3 text-left text-xs">#</th>
+          <th class="px-4 py-3 text-left text-xs">No. Antrian</th>
+          <th class="px-4 py-3 text-left text-xs">Nama</th>
+          <th class="px-4 py-3 text-left text-xs">Layanan</th>
+          <th class="px-4 py-3 text-left text-xs">Status</th>
+          <th class="px-4 py-3 text-left text-xs">Aksi</th>
+         </tr>
+        </thead>
+        <tbody id="adminTableBody"></tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+   </div>
+
+   <!-- OPERATOR PANEL -->
+   <div id="page-operator" class="page-section">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+     <div class="flex justify-between items-center mb-8">
+         <h1 class="text-2xl font-black text-white">Panel Operator <span id="opLoketLabel" style="color:#d4a844"></span></h1>
+         <button onclick="fetchData()" class="btn-secondary px-4 py-2 rounded-lg text-xs flex items-center gap-2"><i data-lucide="refresh-cw" style="width:14px;height:14px"></i> Refresh Data</button>
+     </div>
+     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="card-glass rounded-xl p-5"><div class="text-3xl font-black text-white" id="op-total">0</div><div class="text-xs mt-1" style="color:#8899bb">Antrian Hari Ini</div></div>
+      <div class="card-glass rounded-xl p-5"><div class="text-3xl font-black text-yellow-400" id="op-waiting">0</div><div class="text-xs mt-1" style="color:#8899bb">Menunggu</div></div>
+      <div class="card-glass rounded-xl p-5"><div class="text-3xl font-black" style="color:#60a5fa" id="op-processing">0</div><div class="text-xs mt-1" style="color:#8899bb">Diproses</div></div>
+      <div class="card-glass rounded-xl p-5"><div class="text-3xl font-black text-green-400" id="op-done">0</div><div class="text-xs mt-1" style="color:#8899bb">Selesai</div></div>
+     </div>
+     <div class="card-glass rounded-2xl overflow-hidden">
+      <div class="p-4 border-b" style="border-color:rgba(212,168,68,0.1)"><h3 class="font-bold text-white">Antrian untuk Loket Anda</h3></div>
+      <div class="overflow-x-auto">
+       <table class="w-full admin-table">
+        <thead style="background:rgba(212,168,68,0.05)">
+         <tr>
+          <th class="px-4 py-3 text-left text-xs">#</th>
+          <th class="px-4 py-3 text-left text-xs">No. Antrian</th>
+          <th class="px-4 py-3 text-left text-xs">Nama</th>
+          <th class="px-4 py-3 text-left text-xs">Layanan</th>
+          <th class="px-4 py-3 text-left text-xs">Status</th>
+          <th class="px-4 py-3 text-left text-xs">Aksi</th>
+         </tr>
+        </thead>
+        <tbody id="opTableBody"></tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  
+  <div id="toastContainer"></div>
+
+  <script>
+// ============================================================
+// CONFIGURATION: GOOGLE APPS SCRIPT URL
+// ============================================================
+// PASTE URL DEPLOYMENT GOOGLE APPS SCRIPT ANDA DI SINI
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzdxjM31X4oOubdA1Ge5GhJ2B9XAu48MuaUVocIX6LjSRq6yl1D6QZWROmhg6Qpq8kxtA/exec"; 
+
+// ============================================================
+// GLOBAL STATE
+// ============================================================
+let allQueues = [];
+let currentUser = null;
+
+const DEMO_USERS = {
+  'loket1': { password: '123456', role: 'operator', loket: 'Loket 1', counter: 'Loket 1' },
+  'loket2': { password: '123456', role: 'operator', loket: 'Loket 2', counter: 'Loket 2' },
+  'loket3': { password: '123456', role: 'operator', loket: 'Loket 3', counter: 'Loket 3' },
+  'admin': { password: '123456', role: 'admin', loket: 'Semua Loket', counter: null }
+};
+
+const SERVICE_CODES = {
+  'Perekaman KTP-el': 'A', 'Penerbitan KTP-el': 'B', 'Kartu Keluarga': 'C',
+  'Kartu Identitas Anak': 'D', 'Akta Kelahiran': 'G', 'Akta Perkawinan': 'I'
+};
+
+// ============================================================
+// API CALLS (MENGHUBUNGKAN KE GOOGLE SHEETS)
+// ============================================================
+async function fetchData() {
+    if(GAS_URL === "URL_GOOGLE_APPS_SCRIPT_ANDA_DISINI") return; // Skip if not setup
+    
+    try {
+        const response = await fetch(GAS_URL);
+        const result = await response.json();
+        
+        if(result.status === 'success') {
+            allQueues = result.data;
+            updateStats();
+            if(document.getElementById('page-admin').classList.contains('active')) renderAdmin();
+            if(document.getElementById('page-operator').classList.contains('active')) renderOperator();
+            if(document.getElementById('page-tracking').classList.contains('active')) renderTrackingList();
+        }
+    } catch(err) {
+        console.error("Gagal mengambil data", err);
+    }
+}
+
+async function createQueueInSheet(queueData) {
+    showLoading(true);
+    try {
+        const response = await fetch(GAS_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'create', data: queueData }),
+            headers: { "Content-Type": "text/plain;charset=utf-8" } // Menghindari CORS preflight
+        });
+        const result = await response.json();
+        if(result.status === 'success') {
+            await fetchData(); // Refresh data
+            return true;
+        }
+    } catch (err) {
+        console.error("Gagal menyimpan data", err);
+    } finally {
+        showLoading(false);
+    }
+    return false;
+}
+
+async function updateStatusInSheet(id, newStatus) {
+    showLoading(true);
+    try {
+        const response = await fetch(GAS_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'update', data: { id: id, status: newStatus } }),
+            headers: { "Content-Type": "text/plain;charset=utf-8" }
+        });
+        const result = await response.json();
+        if(result.status === 'success') {
+            await fetchData();
+            return true;
+        }
+    } catch(err) {
+        console.error("Gagal update data", err);
+    } finally {
+        showLoading(false);
+    }
+    return false;
+}
+
+function showLoading(show) {
+    document.getElementById('loading-overlay').style.display = show ? 'flex' : 'none';
+}
+
+// ============================================================
+// SUARA - TEXT TO SPEECH
+// ============================================================
+function speakQueue(queueNum) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const parts = queueNum.split('-');
+  const text = `Nomor antrian ${parts[0]} ${Array.from(parts[1]).join(' ')}`;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'id-ID';
+  utterance.rate = 0.8;
+  window.speechSynthesis.speak(utterance);
+}
+
+// ============================================================
+// PRINT (Sama seperti original)
+// ============================================================
+let lastQueueData = null;
+function openPrintModal(queueData) {
+  lastQueueData = queueData;
+  document.getElementById('printQueueNum').textContent = queueData.queue_number;
+  document.getElementById('printFullName').textContent = queueData.full_name;
+  document.getElementById('printService').textContent = queueData.service_type;
+  document.getElementById('printCounter').textContent = queueData.counter;
+  document.getElementById('modalPrint').classList.remove('hidden');
+  setTimeout(() => lucide.createIcons(), 50);
+}
+function closePrintModal() {
+  document.getElementById('modalPrint').classList.add('hidden');
+  lastQueueData = null;
+}
+function printTicket() {
+  if (!lastQueueData) return;
+  const printContent = `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body { font-family: Arial, sans-serif; margin: 0; padding: 20px; } .ticket { width: 100%; max-width: 400px; margin: 0 auto; border: 2px solid #d4a844; padding: 30px; text-align: center; background: linear-gradient(135deg, #0a1628, #112240); color: #e8f0fe; } .header { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: #d4a844; } .queue-number { font-size: 48px; font-weight: bold; color: #f0c85a; margin: 20px 0; } .info { margin: 15px 0; font-size: 14px; } .label { font-size: 12px; color: #8899bb; } .value { font-size: 14px; color: #e8f0fe; font-weight: bold; } .footer { margin-top: 30px; font-size: 12px; color: #8899bb; border-top: 1px solid #4a9eff; padding-top: 15px; }</style></head><body><div class="ticket"><div class="header">DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL</div><div class="header">KAB. KEPULAUAN TANIMBAR</div><div class="queue-number">${lastQueueData.queue_number}</div><div class="info"><div class="label">NAMA PEMEGANG</div><div class="value">${lastQueueData.full_name}</div></div><div class="info"><div class="label">JENIS LAYANAN</div><div class="value">${lastQueueData.service_type}</div></div><div class="info"><div class="label">LOKET</div><div class="value">${lastQueueData.counter}</div></div><div class="info"><div class="label">TANGGAL</div><div class="value">${new Date(lastQueueData.date).toLocaleDateString('id-ID')}</div></div><div class="footer">Simpan tiket ini hingga selesai melayani<br>Terima kasih telah berkunjung</div></div></body></html>`;
+  const printWindow = window.open('', '', 'width=500,height=600');
+  printWindow.document.write(printContent);
+  printWindow.document.close();
+  printWindow.print();
+}
+
+// ============================================================
+// UI NAVIGATION
+// ============================================================
+const pages = ['home', 'queue', 'tracking', 'procedure', 'about', 'contact', 'login', 'admin', 'operator'];
+function showPage(name) {
+  if (currentUser && ['home', 'queue', 'tracking', 'procedure', 'about', 'contact'].includes(name)) {
+    showToast('Logout terlebih dahulu untuk akses halaman publik', 'error');
+    return;
+  }
+  pages.forEach(p => {
+    const el = document.getElementById('page-' + p);
+    if (el) el.classList.toggle('active', p === name);
+  });
+  
+  if (name === 'queue') initQueueForm();
+  if (name === 'admin') renderAdmin();
+  if (name === 'operator') renderOperator();
+  
+  window.scrollTo(0, 0);
+  setTimeout(() => lucide.createIcons(), 100);
+}
+
+function updateNavBar() {
+  const desktopNav = document.getElementById('desktopNav');
+  const authNav = document.getElementById('authNav');
+  const userInfoNav = document.getElementById('userInfoNav');
+  
+  if (currentUser) {
+    desktopNav.classList.add('hidden');
+    authNav.classList.add('hidden');
+    userInfoNav.classList.remove('hidden');
+    document.getElementById('userDisplayName').textContent = currentUser.loket;
+  } else {
+    desktopNav.classList.remove('hidden');
+    authNav.classList.remove('hidden');
+    userInfoNav.classList.add('hidden');
+  }
+}
+function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+function selectServiceAndGo(service) { document.getElementById('serviceType').value = service; showPage('queue'); }
+
+// ============================================================
+// LOGIN
+// ============================================================
+function handleLogin(e) {
+  e.preventDefault();
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  
+  if (!DEMO_USERS[username] || DEMO_USERS[username].password !== password) {
+    document.getElementById('loginError').textContent = '❌ Username atau password salah';
+    document.getElementById('loginError').classList.remove('hidden');
+    return;
+  }
+  
+  currentUser = { ...DEMO_USERS[username], username };
+  document.getElementById('loginForm').reset();
+  document.getElementById('loginError').classList.add('hidden');
+  updateNavBar();
+  showPage(currentUser.role === 'admin' ? 'admin' : 'operator');
+  showToast(`✅ Selamat datang ${username}!`, 'success');
+}
+function logout() {
+  currentUser = null;
+  window.speechSynthesis.cancel();
+  updateNavBar();
+  showPage('home');
+  showToast('✅ Anda telah logout', 'success');
+}
+
+// ============================================================
+// QUEUE FORM
+// ============================================================
+function initQueueForm() {
+  const now = new Date();
+  document.getElementById('queueDateDisplay').textContent = now.toLocaleDateString('id-ID');
+}
+
+function generateQueueNumber(service) {
+  const code = SERVICE_CODES[service] || 'X';
+  const today = new Date().toISOString().slice(0, 10);
+  const count = allQueues.filter(q => q.date === today && q.service_code === code).length;
+  return `${code}-${String(count + 1).padStart(3, '0')}`;
+}
+
+async function handleQueueSubmit(e) {
+  e.preventDefault();
+  
+  if (GAS_URL === "URL_GOOGLE_APPS_SCRIPT_ANDA_DISINI") {
+      showToast('⚠️ Backend Script belum dikonfigurasi!', 'error');
+      return;
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  if (allQueues.filter(q=>q.date === today).length >= 999) {
+    document.getElementById('limit-warning').classList.remove('hidden');
+    return;
+  }
+
+  const serviceType = document.getElementById('serviceType').value;
+  const queueNum = generateQueueNumber(serviceType);
+
+  const queueData = {
+    id: "Q-" + Date.now() + "-" + Math.floor(Math.random() * 1000), // Unique ID
+    queue_number: queueNum,
+    date: today,
+    full_name: document.getElementById('fullName').value.trim(),
+    nik: document.getElementById('nik').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    district: document.getElementById('district').value,
+    service_type: serviceType,
+    arrival_time: document.getElementById('arrivalTime').value,
+    status: 'Menunggu',
+    counter: document.getElementById('counterChoice').value,
+    created_at: new Date().toISOString(),
+    service_code: SERVICE_CODES[serviceType]
+  };
+
+  const isSuccess = await createQueueInSheet(queueData);
+
+  if (isSuccess) {
+    showToast(`✅ Antrian ${queueNum} berhasil dibuat!`, 'success');
+    speakQueue(queueNum);
+    openPrintModal(queueData);
+    e.target.reset();
+    initQueueForm();
+  } else {
+    showToast('❌ Gagal membuat antrian', 'error');
+  }
+}
+
+// ============================================================
+// TRACKING & RENDERING
+// ============================================================
+function renderTrackingList() {
+  const term = document.getElementById('trackingInput').value.toLowerCase();
+  const today = new Date().toISOString().slice(0, 10);
+  let list = allQueues.filter(q => q.date === today && q.queue_number.toLowerCase().includes(term));
+  
+  const container = document.getElementById('trackingList');
+  container.innerHTML = list.length === 0 ? '<div class="text-center py-12" style="color:#8899bb"><i data-lucide="inbox" style="width:48px;height:48px;margin:auto;opacity:0.3"></i><p class="mt-3 text-sm">Tidak ada antrian hari ini.</p></div>' : list.map((q) => `
+    <div class="card-glass rounded-2xl p-5">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="text-3xl font-black gradient-text">${q.queue_number}</div>
+          <div class="text-xs mt-2" style="color:#8899bb">${q.full_name} • ${q.service_type}</div>
+          <div class="text-xs mt-1" style="color:#4a9eff">📍 ${q.counter}</div>
+        </div>
+        <span class="px-3 py-1 rounded-full text-xs font-bold ${q.status === 'Menunggu' ? 'badge-waiting' : q.status === 'Diproses' ? 'badge-processing' : 'badge-done'}">${q.status}</span>
+      </div>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+function updateStats() {
+  const today = new Date().toISOString().slice(0, 10);
+  let todayQueues = allQueues.filter(q => q.date === today);
+  
+  const total = todayQueues.length;
+  const waiting = todayQueues.filter(q => q.status === 'Menunggu').length;
+  const processing = todayQueues.filter(q => q.status === 'Diproses').length;
+  const done = todayQueues.filter(q => q.status === 'Selesai').length;
+
+  document.getElementById('admin-total').textContent = total;
+  document.getElementById('admin-waiting').textContent = waiting;
+  document.getElementById('admin-processing').textContent = processing;
+  document.getElementById('admin-done').textContent = done;
+
+  document.getElementById('stat-total-home').textContent = total;
+  document.getElementById('stat-waiting-home').textContent = waiting;
+  document.getElementById('stat-done-home').textContent = done;
+
+  if (currentUser && currentUser.role === 'operator') {
+    document.getElementById('opLoketLabel').textContent = '(' + currentUser.loket + ')';
+    const opQueues = todayQueues.filter(q => q.counter === currentUser.counter);
+    document.getElementById('op-total').textContent = opQueues.length;
+    document.getElementById('op-waiting').textContent = opQueues.filter(q => q.status === 'Menunggu').length;
+    document.getElementById('op-processing').textContent = opQueues.filter(q => q.status === 'Diproses').length;
+    document.getElementById('op-done').textContent = opQueues.filter(q => q.status === 'Selesai').length;
+  }
+}
+
+function renderAdmin() {
+  const today = new Date().toISOString().slice(0, 10);
+  const list = allQueues.filter(q => q.date === today);
+  const tbody = document.getElementById('adminTableBody');
+  tbody.innerHTML = list.length === 0 ? '<tr><td colspan="6" class="px-4 py-12 text-center text-sm" style="color:#8899bb">Belum ada data.</td></tr>' : list.map((q, i) => `
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.04)">
+      <td class="px-4 py-3 text-xs">${i+1}</td>
+      <td class="px-4 py-3"><span class="font-black text-sm gradient-text cursor-pointer" onclick="speakQueue('${q.queue_number}')" title="Klik untuk memanggil">${q.queue_number}</span></td>
+      <td class="px-4 py-3 text-sm">${q.full_name}</td>
+      <td class="px-4 py-3 text-sm">${q.service_type} • ${q.counter}</td>
+      <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-bold ${q.status === 'Menunggu' ? 'badge-waiting' : q.status === 'Diproses' ? 'badge-processing' : 'badge-done'}">${q.status}</span></td>
+      <td class="px-4 py-3 flex gap-2"><button onclick="updateStatusFromPanel('${q.id}','Diproses')" class="text-xs px-2 py-1 rounded" style="background:rgba(88,166,255,0.15);color:#58a6ff">Proses</button><button onclick="updateStatusFromPanel('${q.id}','Selesai')" class="text-xs px-2 py-1 rounded" style="background:rgba(52,211,153,0.15);color:#6ee7b7">Selesai</button></td>
+    </tr>
+  `).join('');
+  lucide.createIcons();
+}
+
+function renderOperator() {
+  const today = new Date().toISOString().slice(0, 10);
+  let list = allQueues.filter(q => q.date === today);
+  if (currentUser.counter) list = list.filter(q => q.counter === currentUser.counter);
+
+  const tbody = document.getElementById('opTableBody');
+  tbody.innerHTML = list.length === 0 ? '<tr><td colspan="6" class="px-4 py-12 text-center text-sm" style="color:#8899bb">Belum ada antrian.</td></tr>' : list.map((q, i) => `
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.04)">
+      <td class="px-4 py-3 text-xs">${i+1}</td>
+      <td class="px-4 py-3"><span class="font-black text-sm gradient-text cursor-pointer" onclick="speakQueue('${q.queue_number}')" title="Klik untuk memanggil">${q.queue_number}</span></td>
+      <td class="px-4 py-3 text-sm">${q.full_name}</td>
+      <td class="px-4 py-3 text-sm">${q.service_type}</td>
+      <td class="px-4 py-3"><span class="px-2 py-1 rounded-full text-xs font-bold ${q.status === 'Menunggu' ? 'badge-waiting' : q.status === 'Diproses' ? 'badge-processing' : 'badge-done'}">${q.status}</span></td>
+      <td class="px-4 py-3 flex gap-2"><button onclick="updateStatusFromPanel('${q.id}','Diproses')" class="text-xs px-2 py-1 rounded" style="background:rgba(88,166,255,0.15);color:#58a6ff">Proses</button><button onclick="updateStatusFromPanel('${q.id}','Selesai')" class="text-xs px-2 py-1 rounded" style="background:rgba(52,211,153,0.15);color:#6ee7b7">Selesai</button></td>
+    </tr>
+  `).join('');
+  lucide.createIcons();
+}
+
+async function updateStatusFromPanel(id, newStatus) {
+  const record = allQueues.find(q => q.id === id);
+  if (!record) return;
+  
+  const isSuccess = await updateStatusInSheet(id, newStatus);
+  if (isSuccess) {
+    showToast(`✅ Status diperbarui ke: ${newStatus}`, 'success');
+    if (newStatus === 'Diproses') speakQueue(record.queue_number);
+  } else {
+    showToast('❌ Gagal update status', 'error');
+  }
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  const color = type === 'success' ? '#4ade80' : '#f87171';
+  toast.className = 'toast';
+  toast.style.cssText = `background:rgba(17,34,64,0.98);backdrop-filter:blur(20px);border:1px solid rgba(212,168,68,0.3);border-radius:12px;padding:12px 16px;max-width:320px;font-size:13px;color:${color};font-weight:500;margin-top:10px;`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(100px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  lucide.createIcons();
+  updateNavBar();
+  showPage('home');
+  const now = new Date();
+  const dateEl = document.getElementById('queueDateDisplay');
+  if (dateEl) dateEl.textContent = now.toLocaleDateString('id-ID');
+  
+  // Ambil data pertama kali jika URL sudah diset
+  if(GAS_URL !== "URL_GOOGLE_APPS_SCRIPT_ANDA_DISINI") {
+      fetchData();
+      // Auto-refresh setiap 15 detik (berguna untuk layar loket)
+      setInterval(fetchData, 15000); 
+  } else {
+      console.warn("Harap masukkan URL Google Apps Script Anda pada variabel GAS_URL");
+  }
+});
+  </script>
+ </body>
+</html>
