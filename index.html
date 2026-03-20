@@ -233,20 +233,15 @@
       </div>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
        <!-- KOTAK LAYANAN (Dipotong demi singkatnya, sama seperti original) -->
-       <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Perekaman KTP-el')">
+       <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('KTP Elektronik')">
         <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="scan-face" style="width:22px;height:22px;color:#d4a844"></i></div>
-        <div class="text-xs font-bold text-white leading-tight">Perekaman KTP-el</div>
-        <div class="text-xs mt-1" style="color:#8899bb">Kode: A</div>
-       </div>
-       <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Penerbitan KTP-el')">
-        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="id-card" style="width:22px;height:22px;color:#d4a844"></i></div>
-        <div class="text-xs font-bold text-white leading-tight">Penerbitan KTP-el</div>
-        <div class="text-xs mt-1" style="color:#8899bb">Kode: B</div>
+        <div class="text-xs font-bold text-white leading-tight">KTP Elektronik</div>
+        <div class="text-xs mt-1" style="color:#8899bb">Kode: C</div>
        </div>
        <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Kartu Keluarga')">
         <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="users" style="width:22px;height:22px;color:#d4a844"></i></div>
         <div class="text-xs font-bold text-white leading-tight">Kartu Keluarga</div>
-        <div class="text-xs mt-1" style="color:#8899bb">Kode: C</div>
+        <div class="text-xs mt-1" style="color:#8899bb">Kode: A</div>
        </div>
        <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Kartu Identitas Anak')">
         <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="star" style="width:22px;height:22px;color:#d4a844"></i></div>
@@ -261,7 +256,12 @@
        <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Akta Perkawinan')">
         <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="heart" style="width:22px;height:22px;color:#d4a844"></i></div>
         <div class="text-xs font-bold text-white leading-tight">Akta Perkawinan</div>
-        <div class="text-xs mt-1" style="color:#8899bb">Kode: I</div>
+        <div class="text-xs mt-1" style="color:#8899bb">Kode: H</div>
+       </div>
+       <div class="card-glass rounded-xl p-4 text-center cursor-pointer" onclick="selectServiceAndGo('Pindah Keluar')">
+        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:linear-gradient(135deg,rgba(212,168,68,0.2),rgba(74,158,255,0.2));border:1px solid rgba(212,168,68,0.3)"><i data-lucide="arrow-right-circle" style="width:22px;height:22px;color:#d4a844"></i></div>
+        <div class="text-xs font-bold text-white leading-tight">Pindah Keluar</div>
+        <div class="text-xs mt-1" style="color:#8899bb">Kode: E</div>
        </div>
       </div>
      </div>
@@ -303,9 +303,9 @@
         <div><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Nomor HP <span class="text-red-400">*</span></label> <input type="tel" id="phone" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="08xxxxxxxxxx" required></div>
         <div><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Email (opsional)</label> <input type="email" id="email" class="form-input w-full rounded-xl px-4 py-3 text-sm" placeholder="contoh@email.com"></div>
        </div>
-       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Jam Kedatangan <span class="text-red-400">*</span></label> <input type="time" id="arrivalTime" class="form-input w-full rounded-xl px-4 py-3 text-sm" required></div>
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Jam Kedatangan (Otomatis)</label> <input type="time" id="arrivalTime" class="form-input w-full rounded-xl px-4 py-3 text-sm" style="cursor:not-allowed; opacity:0.8" readonly required></div>
        <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Kecamatan <span class="text-red-400">*</span></label> <select id="district" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> <option value="">— Pilih Kecamatan —</option> <option value="Tanimbar Selatan">Tanimbar Selatan</option> <option value="Tanimbar Utara">Tanimbar Utara</option> <option value="Selaru">Selaru</option> </select></div>
-       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Jenis Layanan <span class="text-red-400">*</span></label> <select id="serviceType" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> <option value="">— Pilih Layanan —</option> <option value="Perekaman KTP-el">Perekaman KTP-el (A)</option> <option value="Penerbitan KTP-el">Penerbitan KTP-el (B)</option> <option value="Kartu Keluarga">Kartu Keluarga (C)</option> <option value="Kartu Identitas Anak">Kartu Identitas Anak (D)</option> <option value="Akta Kelahiran">Akta Kelahiran (G)</option> <option value="Akta Perkawinan">Akta Perkawinan (I)</option> </select></div>
+       <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Jenis Layanan <span class="text-red-400">*</span></label> <select id="serviceType" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> <option value="">— Pilih Layanan —</option> <option value="Kartu Keluarga">Kartu Keluarga (A)</option> <option value="Biodata WNI">Biodata WNI (B)</option> <option value="KTP Elektronik">KTP Elektronik (C)</option> <option value="Kartu Identitas Anak">Kartu Identitas Anak (D)</option> <option value="Pindah Keluar">Pindah Keluar (E)</option> <option value="Pindah Masuk">Pindah Masuk (F)</option> <option value="Akta Kelahiran">Akta Kelahiran (G)</option> <option value="Akta Perkawinan">Akta Perkawinan (H)</option> <option value="Akta Kematian">Akta Kematian (I)</option> <option value="Akta Perceraian">Akta Perceraian (J)</option> <option value="Lainnya">Lainnya (K)</option> </select></div>
        <div class="mb-5"><label class="block text-xs font-semibold mb-2" style="color:#8899bb">Pilih Loket <span class="text-red-400">*</span></label> <select id="counterChoice" class="form-input w-full rounded-xl px-4 py-3 text-sm" required> <option value="">— Pilih Loket —</option> <option value="Loket 1">Loket 1</option> <option value="Loket 2">Loket 2</option> <option value="Loket 3">Loket 3</option> </select></div>
        <button type="submit" class="btn-primary w-full py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 mt-6"><i data-lucide="ticket" style="width:18px;height:18px"></i> Ambil Nomor Antrian</button>
       </form>
@@ -464,7 +464,7 @@
 // CONFIGURATION: GOOGLE APPS SCRIPT URL
 // ============================================================
 // PASTE URL DEPLOYMENT GOOGLE APPS SCRIPT ANDA DI SINI
-const GAS_URL = "https://script.google.com/macros/s/AKfycbzdxjM31X4oOubdA1Ge5GhJ2B9XAu48MuaUVocIX6LjSRq6yl1D6QZWROmhg6Qpq8kxtA/exec"; 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxTvVGEXrALrZlTuXt-ydiwvznC-lWgS1M7RBOMWkdDFFDh45oMPVYHHzUnPSmDrHWmRw/exec"; 
 
 // ============================================================
 // GLOBAL STATE
@@ -480,8 +480,10 @@ const DEMO_USERS = {
 };
 
 const SERVICE_CODES = {
-  'Perekaman KTP-el': 'A', 'Penerbitan KTP-el': 'B', 'Kartu Keluarga': 'C',
-  'Kartu Identitas Anak': 'D', 'Akta Kelahiran': 'G', 'Akta Perkawinan': 'I'
+  'Kartu Keluarga': 'A', 'Biodata WNI': 'B', 'KTP Elektronik': 'C',
+  'Kartu Identitas Anak': 'D', 'Pindah Keluar': 'E', 'Pindah Masuk': 'F',
+  'Akta Kelahiran': 'G', 'Akta Perkawinan': 'H', 'Akta Kematian': 'I',
+  'Akta Perceraian': 'J', 'Lainnya': 'K'
 };
 
 // ============================================================
@@ -601,6 +603,17 @@ function showPage(name) {
     showToast('Logout terlebih dahulu untuk akses halaman publik', 'error');
     return;
   }
+  
+  // Proteksi Halaman Admin & Operator Loket
+  if (name === 'admin' && (!currentUser || currentUser.role !== 'admin')) {
+      showToast('Akses ditolak: Area Khusus Admin', 'error');
+      return;
+  }
+  if (name === 'operator' && (!currentUser || currentUser.role !== 'operator')) {
+      showToast('Akses ditolak: Area Khusus Operator Loket', 'error');
+      return;
+  }
+
   pages.forEach(p => {
     const el = document.getElementById('page-' + p);
     if (el) el.classList.toggle('active', p === name);
@@ -668,6 +681,12 @@ function logout() {
 function initQueueForm() {
   const now = new Date();
   document.getElementById('queueDateDisplay').textContent = now.toLocaleDateString('id-ID');
+  
+  // Set Jam Kedatangan otomatis agar pengguna melihat (Visual Feedback)
+  const arrivalInput = document.getElementById('arrivalTime');
+  if(arrivalInput) {
+      arrivalInput.value = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+  }
 }
 
 function generateQueueNumber(service) {
@@ -693,6 +712,9 @@ async function handleQueueSubmit(e) {
 
   const serviceType = document.getElementById('serviceType').value;
   const queueNum = generateQueueNumber(serviceType);
+  
+  // Ambil waktu paling mutakhir (saat tombol submit ditekan)
+  const exactArrivalTime = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
 
   const queueData = {
     id: "Q-" + Date.now() + "-" + Math.floor(Math.random() * 1000), // Unique ID
@@ -704,7 +726,7 @@ async function handleQueueSubmit(e) {
     email: document.getElementById('email').value.trim(),
     district: document.getElementById('district').value,
     service_type: serviceType,
-    arrival_time: document.getElementById('arrivalTime').value,
+    arrival_time: exactArrivalTime,
     status: 'Menunggu',
     counter: document.getElementById('counterChoice').value,
     created_at: new Date().toISOString(),
