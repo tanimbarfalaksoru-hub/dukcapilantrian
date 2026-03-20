@@ -364,7 +364,7 @@
       <p class="mt-2 text-sm" style="color:#8899bb">Lacak posisi antrian Anda secara real-time</p>
      </div>
      <div class="card-glass rounded-2xl p-6 mb-8">
-      <div class="flex gap-3"><input type="text" id="trackingInput" class="form-input flex-1 rounded-xl px-4 py-3 text-sm" placeholder="Masukkan nomor antrian (contoh: A-001)..." oninput="renderTrackingList()"> <button onclick="renderTrackingList()" class="btn-primary px-6 py-3 rounded-xl text-sm font-bold"><i data-lucide="search" style="width:16px;height:16px"></i></button></div>
+      <div class="flex gap-3"><input type="text" id="trackingInput" class="form-input flex-1 rounded-xl px-4 py-3 text-sm" placeholder="Cari No. Antrian (cth: A-001) atau Nama Lengkap..." oninput="renderTrackingList()"> <button onclick="renderTrackingList()" class="btn-primary px-6 py-3 rounded-xl text-sm font-bold"><i data-lucide="search" style="width:16px;height:16px"></i></button></div>
      </div>
      <div id="trackingList" class="space-y-4"></div>
     </div>
@@ -506,7 +506,7 @@
 // CONFIGURATION: GOOGLE APPS SCRIPT URL
 // ============================================================
 // PASTE URL DEPLOYMENT GOOGLE APPS SCRIPT ANDA DI SINI
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxFWepJnQ3Kr_bVvM33R0inyIxM2C89j-uX1CTIz9Kil2I_hUfQ3ONPyJ-r7sdBbqZUFw/exec"; 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzqgd7acHpdhZrjQqLSElSIJHeMepM4GSxtwEbpDvIFBBfvuLo5iTG8E_GNpFUj4o1t_A/exec"; 
 
 // ============================================================
 // GLOBAL STATE
@@ -528,21 +528,26 @@ async function fetchData() {
     if(GAS_URL === "URL_GOOGLE_APPS_SCRIPT_ANDA_DISINI") return;
     
     try {
-        // PERBAIKAN: Menambahkan { redirect: "follow" } untuk memastikan Google Web App ter-load
-        const response = await fetch(GAS_URL, { redirect: "follow" });
+        // PERBAIKAN 1: Menambahkan Cache-Buster (?t=waktu) agar browser selalu mengambil data terbaru
+        const fetchUrl = GAS_URL + (GAS_URL.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+        const response = await fetch(fetchUrl, { redirect: "follow" });
         const result = await response.json();
         
         if(result.status === 'success') {
             
-            // PERBAIKAN: Sinkronisasi dan pembersihan data mutlak
+            // PERBAIKAN 2: Pembersihan karakter gaib dan format tanggal ISO (T)
             allQueues = result.data.map(q => {
-                if(q.date) q.date = String(q.date).trim();
+                if(q.date) {
+                    let dStr = String(q.date).trim();
+                    if(dStr.includes('T')) dStr = dStr.split('T')[0]; // Potong jam jika terbawa dari Google Sheets
+                    q.date = dStr;
+                }
                 if(q.counter) q.counter = String(q.counter).trim();
                 if(q.status) q.status = String(q.status).trim();
                 return q;
             });
 
-            console.log("Data berhasil dimuat:", allQueues); // Berguna untuk di-cek di F12 (Inspect Element)
+            console.log("Data berhasil dimuat:", allQueues);
 
             updateStats();
             if(document.getElementById('page-admin').classList.contains('active')) renderAdmin();
@@ -833,18 +838,31 @@ async function handleQueueSubmit(e) {
 // TRACKING & RENDERING
 // ============================================================
 function renderTrackingList() {
-  const term = document.getElementById('trackingInput').value.toLowerCase();
+  const term = document.getElementById('trackingInput').value.toLowerCase().trim();
   const today = getTodayString();
-  let list = allQueues.filter(q => q.date === today && q.queue_number.toLowerCase().includes(term));
+  
+  // PERBAIKAN 3: Jika kolom pencarian diisi, sistem akan mencari data ke SELURUH TANGGAL (tidak hanya hari ini)
+  let list = allQueues.filter(q => {
+    const isToday = q.date === today;
+    const matchQueue = String(q.queue_number).toLowerCase().includes(term);
+    const matchName = String(q.full_name).toLowerCase().includes(term);
+    const matchId = String(q.id).toLowerCase().includes(term);
+    
+    if (term === '') {
+        return isToday; // Jika kotak kosong, tampilkan hanya antrian hari ini
+    } else {
+        return matchQueue || matchName || matchId; // Jika mencari, cari dari semua riwayat
+    }
+  });
   
   const container = document.getElementById('trackingList');
-  container.innerHTML = list.length === 0 ? '<div class="text-center py-12" style="color:#8899bb"><i data-lucide="inbox" style="width:48px;height:48px;margin:auto;opacity:0.3"></i><p class="mt-3 text-sm">Tidak ada antrian hari ini.</p></div>' : list.map((q) => `
-    <div class="card-glass rounded-2xl p-5">
+  container.innerHTML = list.length === 0 ? '<div class="text-center py-12" style="color:#8899bb"><i data-lucide="inbox" style="width:48px;height:48px;margin:auto;opacity:0.3"></i><p class="mt-3 text-sm">Tidak ada antrian yang cocok.</p></div>' : list.map((q) => `
+    <div class="card-glass rounded-2xl p-5 mb-4">
       <div class="flex items-start justify-between">
         <div>
           <div class="text-3xl font-black gradient-text">${q.queue_number}</div>
           <div class="text-xs mt-2" style="color:#8899bb">${q.full_name} • ${q.service_type}</div>
-          <div class="text-xs mt-1" style="color:#4a9eff">📍 ${q.counter}</div>
+          <div class="text-xs mt-1" style="color:#4a9eff">📍 ${q.counter} • 📅 ${q.date}</div>
         </div>
         <span class="px-3 py-1 rounded-full text-xs font-bold ${q.status === 'Menunggu' ? 'badge-waiting' : q.status === 'Diproses' ? 'badge-processing' : 'badge-done'}">${q.status}</span>
       </div>
