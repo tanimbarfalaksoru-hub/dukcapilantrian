@@ -506,7 +506,7 @@
 // CONFIGURATION: GOOGLE APPS SCRIPT URL
 // ============================================================
 // PASTE URL DEPLOYMENT GOOGLE APPS SCRIPT ANDA DI SINI
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwqYc4hQ62DDBhN8MoqTHqrWB7CuipA6pPS5LVQ2Hs1h_EZ3fP4F34FUXh7cJTV5OWG1w/exec"; 
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzavmDyGUhMseuSqlVQv80LjV-Mdfx6ach0fKO6fqPDwp0ejH_om38efvOJoBodDc9T3A/exec"; 
 
 // ============================================================
 // GLOBAL STATE
@@ -768,7 +768,7 @@ function initQueueForm() {
 
 function generateQueueNumber(service) {
   const code = SERVICE_CODES[service] || 'X';
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTodayString();
   const count = allQueues.filter(q => q.date === today && q.service_code === code).length;
   return `${code}-${String(count + 1).padStart(3, '0')}`;
 }
@@ -781,7 +781,7 @@ async function handleQueueSubmit(e) {
       return;
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getTodayString();
   if (allQueues.filter(q=>q.date === today).length >= 999) {
     document.getElementById('limit-warning').classList.remove('hidden');
     return;
